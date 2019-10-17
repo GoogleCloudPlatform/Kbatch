@@ -1,0 +1,31 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: kbatch.k8s.io/v1beta1
+kind: BatchCostModel
+metadata:
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: default
+spec:
+  resources:
+    # These costs are hourly and in USD. For example, based on the numbers below, running using 1 CPU
+    # 1 GB of RAM, and 1 Tesla T4 GPU for 2 hours would cost 2 * ($0.031611 + $0.004237 + $0.95)
+    # The values are taken from https://cloud.google.com/compute/pricing for
+    # region us-west1. The values are accurate as of April 2019. Actual pricing depends on various factors,
+    # such as long-term contracts, use of standard machine types, the region, etc.
+    cpu: 0.031611  # This is the on-demand price for a single vCPU
+    memory: 0.004237  # This is the on-demand price for 1GB of memory
+    nvidia.com/gpu: 0.95  # This is the cost for use of the Tesla T4 GPU. Currently the system does not support breaking out prices for specific GPU types, so an average price for the intended GPUs should be used here.
+

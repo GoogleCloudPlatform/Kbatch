@@ -1,0 +1,44 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: $podName
+  namespace: $namespace
+spec:
+  automountServiceAccountToken: false
+  containers:
+    - image: ubuntu:latest
+      imagePullPolicy: IfNotPresent
+      name: nfs-util
+      resources:
+        limits:
+          cpu: 700m
+          memory: 500M
+        requests:
+          cpu: 500m
+          memory: 50M
+      securityContext:
+      stdin: true
+      tty: true
+      volumeMounts:
+        - mountPath: $mountPointDir
+          name: data-volume
+  restartPolicy: Never
+  terminationGracePeriodSeconds: 5
+  volumes:
+    - name: data-volume
+      persistentVolumeClaim:
+        claimName: $pvc

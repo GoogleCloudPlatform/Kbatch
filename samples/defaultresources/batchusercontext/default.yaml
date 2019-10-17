@@ -1,0 +1,78 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: kbatch.k8s.io/v1beta1
+kind: BatchUserContext
+metadata:
+  labels:
+    controller-tools.k8s.io: "1.0"
+  name: default
+  namespace: default
+spec:
+  # The * will match any user name. Please only use this catch-all context with caution.
+  # This BatchUserContext is very restrictive.
+  # It allows only certain volume types and no privileged containers.
+  # It sets an arbitrary number for unix user id, gid, etc so the pod will not run as root.
+  # If a different user id is required, use add-user script or manually change it through kubectl apply.
+  userName: "*"
+  securityPolicySpec:
+    privileged: false
+    # Required to prevent escalations to root.
+    allowPrivilegeEscalation: false
+    # This is redundant with non-root + disallow privilege escalation,
+    # but we can provide it for defense in depth.
+    requiredDropCapabilities:
+      - ALL
+    # Allow core volume types.
+    volumes:
+      # https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/
+      - 'configMap'
+      # temporary storage local to a container. https://kubernetes.io/docs/concepts/storage/volumes/#emptydir
+      - 'emptyDir'
+      # https://kubernetes.io/docs/concepts/storage/volumes/#secret
+      - 'secret'
+      # https://kubernetes.io/docs/concepts/storage/volumes/#downwardapi
+      - 'downwardAPI'
+      # Assume that persistentVolumes set up by the cluster admin are safe to use.
+      - 'persistentVolumeClaim'
+    hostNetwork: false
+    hostIPC: false
+    hostPID: false
+    runAsUser:
+      # Set the user id to be an arbitrary number.
+      rule: 'MustRunAs'
+      ranges:
+        - min: 12345
+          max: 12345
+    seLinux:
+      # This policy assumes the nodes are using AppArmor rather than SELinux.
+      rule: 'RunAsAny'
+      # This sets the GID to an arbitrary number.
+    runAsGroup:
+      rule: 'MustRunAs'
+      ranges:
+        - min: 12345
+          max: 12345
+    fsGroup:
+      # This sets the fsgroup id to an arbitrary number.
+      rule: 'MustRunAs'
+      ranges:
+        - min: 12345
+          max: 12345
+    supplementalGroups:
+      # This sets the supplemental group to be an arbitrary number.
+      rule: 'MustRunAs'
+      ranges:
+        - min: 12345
+          max: 12345

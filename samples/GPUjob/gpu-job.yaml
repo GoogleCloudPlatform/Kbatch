@@ -1,0 +1,36 @@
+# Copyright 2019 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: kbatch.k8s.io/v1beta1
+kind: BatchJob
+metadata:
+  generateName: gpu-  # generateName allows the system to generate a random name, using this prefix, for the BatchJob upon creation.
+  namespace: default
+spec:
+  batchQueueName: default
+  taskGroups:
+  - name: main
+    maxWallTime: 5m
+    template:
+      spec:
+        containers:
+        - name: cuda-vector-add
+          image: gcr.io/kbatch-images/cuda-vector-add/cuda-vector-add:latest
+          resources:
+            limits:
+              cpu: 1.0
+              memory: 2Gi
+              nvidia.com/gpu: 1  # Assuming no nodeSelector below, this task will run on any node in the cluster that has a GPU, regardless of GPU type.
+          imagePullPolicy: IfNotPresent
+        restartPolicy: Never
