@@ -146,7 +146,7 @@ fi
 # wait for the pod to be running
 pod=
 echo "Waiting for datacopy batchjob to be ready ..."
-wait_limit=10
+wait_limit=40
 wait_num=0
 while [[ -z "$pod" && ${wait_num} -lt ${wait_limit} ]]; do
   sleep 3

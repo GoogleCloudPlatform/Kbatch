@@ -19,8 +19,8 @@
 #
 # If you want to re-run this script, picking a different filestore instance, you must first delete
 # the PVC and then the PV, like
-# kubectl delete -f ../../persistentvolume/persistentvolumeclaim.yaml
-# kubectl delete -f ../../persistentvolume/persistentvolume.yaml
+# kubectl delete -f ../defaultresources/persistentvolume/persistentvolumeclaim.yaml
+# kubectl delete -f ../defaultresources/persistentvolume/persistentvolume.yaml
 # Note that if you have any Pods, including completed Pods that referenced this PVC, you will
 # need to delete those Pods before the PVC will be successfully deleted.
 
@@ -30,8 +30,9 @@ echo "this script file about deleting the old PVC and PV.]"
 gcloud beta filestore instances list
 read -p "Filestore Instance name: " INSTANCE_NAME
 read -p "Filestore Zone: " ZONE
+read -p "Filestore FileShare Name: " FILESTORE_FILESHARE_NAME
 FILESTORE_SERVER_IP=`gcloud beta filestore instances describe ${INSTANCE_NAME} --zone=${ZONE} --format="value(networks.ipAddresses[0])"`
-sed s/FILESTORE_SERVER_IP/${FILESTORE_SERVER_IP}/g ../defaultresources/persistentvolume/persistentvolume.yaml | kubectl apply -f -
+sed s/FILESTORE_FILESHARE_NAME/${FILESTORE_FILESHARE_NAME}/g ../defaultresources/persistentvolume/persistentvolume.yaml | sed s/FILESTORE_SERVER_IP/${FILESTORE_SERVER_IP}/g | kubectl apply -f -
 kubectl apply -f ../defaultresources/persistentvolume/persistentvolumeclaim.yaml
 
 # Add the user and give it the permission to run as root.

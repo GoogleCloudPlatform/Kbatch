@@ -23,6 +23,6 @@ spec:
   accessModes:
   - ReadWriteMany
   nfs:
-    path: /vol1
+    path: /FILESTORE_FILESHARE_NAME
     server: FILESTORE_SERVER_IP
 
