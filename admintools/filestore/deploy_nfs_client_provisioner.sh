@@ -19,13 +19,13 @@
 # as cluster admin.
 
 usage() {
-    echo "usage: deploy_nfs_client_provisioner.sh [gke_region] [gke_cluster_name] [filestore_zone] [filestore_instance_name]"
-    echo "example: deploy_nfs_client_provisioner.sh us-west1 kbatch us-west1-b myfilestore"
+    echo "usage: deploy_nfs_client_provisioner.sh [gke_region] [gke_cluster_name] [filestore_zone] [filestore_instance_name] [filestore_fileshare]"
+    echo "example: deploy_nfs_client_provisioner.sh us-west1 kbatch us-west1-b myfilestore myfileshare"
 }
 
 echo "NFS PVC auto provisioner deployment"
 
-if [[ "$#" -ne 4 ]]; then
+if [[ "$#" -ne 5 ]]; then
     echo "Incorrect number of parameters"
     usage
     exit 1
@@ -35,6 +35,7 @@ gke_region="$1"
 gke_cluster_name="$2"
 filestore_zone="$3"
 filestore_instance_name="$4"
+filestore_fileshare="$5"
 
 echo "gke_region: ${gke_region}"
 echo "gke_cluster_name : ${gke_cluster_name}"
@@ -127,7 +128,7 @@ if [[ ${has_old_release} ]]; then
   fi
 fi
 echo "Installing auto provisioner ${nfs_auto_provisioner_name} into namespace ${install_namespace} ..."
-helm install --set nfs.server=${nfs_server_ip} --set nfs.path=/vol1 stable/nfs-client-provisioner --name ${nfs_auto_provisioner_name} --namespace ${install_namespace}
+helm install --set nfs.server=${nfs_server_ip} --set nfs.path=/${filestore_fileshare} stable/nfs-client-provisioner --name ${nfs_auto_provisioner_name} --namespace ${install_namespace}
 # Sometimes the helm installation returns transient error, but the installation is actually ok.
 # A better way to verify installation is checking if the auto provisioner pod is running and created.
 # The selector name is set by the helm release.
