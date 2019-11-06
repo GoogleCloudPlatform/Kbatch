@@ -30,7 +30,10 @@ spec:
           image: gcr.io/kbatch-images/generate-pi/generate-pi:latest
           resources:
             limits:
-              cpu: 0.7
+              cpu: 1.0
+              memory: 2Gi
+            requests:
+              cpu: 1.0
               memory: 2Gi
           imagePullPolicy: IfNotPresent
         restartPolicy: Never

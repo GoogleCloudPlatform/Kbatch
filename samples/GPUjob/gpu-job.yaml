@@ -32,5 +32,9 @@ spec:
               cpu: 1.0
               memory: 2Gi
               nvidia.com/gpu: 1  # Assuming no nodeSelector below, this task will run on any node in the cluster that has a GPU, regardless of GPU type.
+            requests:
+              cpu: 1.0
+              memory: 2Gi
+              nvidia.com/gpu: 1  # Assuming no nodeSelector below, this task will run on any node in the cluster that has a GPU, regardless of GPU type.
           imagePullPolicy: IfNotPresent
         restartPolicy: Never

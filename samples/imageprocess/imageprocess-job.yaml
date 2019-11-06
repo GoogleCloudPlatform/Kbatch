@@ -36,6 +36,9 @@ spec:
             limits:
               cpu: 1.0
               memory: 2Gi
+            requests:
+              cpu: 1.0
+              memory: 2Gi
           imagePullPolicy: IfNotPresent
         restartPolicy: Never
         volumes:
@@ -70,6 +73,9 @@ spec:
                 name: mypvc
             resources:
               limits:
+                cpu: 1.0
+                memory: 2Gi
+              requests:
                 cpu: 1.0
                 memory: 2Gi
             imagePullPolicy: IfNotPresent
