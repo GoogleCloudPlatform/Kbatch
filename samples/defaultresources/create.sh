@@ -16,9 +16,11 @@
 
 # This script applies all of the base YAML files needed for the sample jobs in the proper order.
 # All resources are created in the default namespace.
+pushd samples/defaultresources
 kubectl apply -R -f batchpriority/
 kubectl apply -R -f batchcostmodel/
 kubectl apply -R -f batchbudget/
 kubectl apply -R -f batchjobconstraint/
 kubectl apply -R -f batchqueue/
 kubectl apply -R -f batchusercontext/
+popd
