@@ -45,6 +45,6 @@ if [[ "$?" -ne 0 ]] ; then
   exit 1
 fi
 
-kubectl apply -f deployment.yaml
+kubectl apply -f prometheus.yaml
 
 echo "Please refer to https://cloud.google.com/monitoring/workspaces/guide#disabling-monitoring for disabling Stackdriver monitoring."
