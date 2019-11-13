@@ -36,7 +36,7 @@ roleRef:
   name: kbatch-prometheus-role
 subjects:
 - kind: ServiceAccount
-  name: default
+  name: kbatch-monitoring-k8s-sa
   namespace: kube-system
 ---
 apiVersion: v1
@@ -107,6 +107,7 @@ spec:
           mountPath: /etc/prometheus/
         - name: prometheus-storage-volume
           mountPath: /prometheus/
+      serviceAccountName: kbatch-monitoring-k8s-sa
       volumes:
       - name: prometheus-config-volume
         configMap:
