@@ -22,4 +22,4 @@ metadata:
 spec:
   batchPriorityName: high
   batchBudgetName: default
-  batchJobConstraintNames: ["default"]
+  constraintNames: ["default"]
