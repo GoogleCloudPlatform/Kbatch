@@ -5,12 +5,12 @@
 This defaultresources folder contains a set of base resources that can be used as a starting point for
 running BatchJobs with KBatch. The following defaults are provided:
 
-BatchCostModel: Populated with current public GCE prices in us-central1
-BatchBudget: Populated to use at most 100 currency units per day
-BatchPriority: Three are created (Low, Medium, High)
-BatchJobConstraint: Restricts jobs to a wall time of less than 30 minutes
-BatchQueue: Set up to use the above BatchBudget, BatchPriority (High), and BatchJobConstraint 
-BatchUserContext: restricted PSP
+* BatchCostModel: Populated with current public GCE prices in us-central1
+* BatchBudget: Populated to use at most 100 currency units per day
+* BatchPriority: Three are created (Low, Medium, High)
+* BatchJobConstraint: Restricts jobs to a wall time of less than 30 minutes
+* BatchQueue: Set up to use the above BatchBudget, BatchPriority (High), and BatchJobConstraint 
+* BatchUserContext: restricted PSP
 
 ## Sample Jobs
 
