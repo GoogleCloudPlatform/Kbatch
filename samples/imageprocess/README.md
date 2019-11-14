@@ -3,7 +3,7 @@
 ### Set up
 
 1. Ensure you have created a Filestore instance in this project.
-2. Run the `sample/apply-config.sh` script. It sets up default resources, which are needed for this sample job.
+2. Run the `defaultresources/create.sh` script. It sets up default resources, which are needed for this sample job.
 Type "y" when asked if you want to enable user to run as root. Script apply-extra-config.sh sets up the persistent volume resources and storage permissions.
 3. Update ksub config to use the persistent volume claim created in step 2. PVC_NAME is the name of PVC created in step 2.
 ./ksub --config --add-volume fs-volume --volume-source PersistentVolumeClaim --params claimName:[PVC_NAME] --params readOnly:false

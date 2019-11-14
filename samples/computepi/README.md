@@ -1,6 +1,6 @@
 ## Running the compute-pi job
 
-The `apply-config.sh` script will set up default resources, which are needed for this sample job.
+The `defaultresources/create.sh` script will set up default resources, which are needed for this sample job.
 
 ### Running using ksub
 `./ksub run_pi_with_ksub.sh`
