@@ -31,10 +31,13 @@ spec:
             limits:
               cpu: 1.0
               memory: 2Gi
-              nvidia.com/gpu: 1  # Assuming no nodeSelector below, this task will run on any node in the cluster that has a GPU, regardless of GPU type.
+              nvidia.com/gpu: 1
             requests:
               cpu: 1.0
               memory: 2Gi
-              nvidia.com/gpu: 1  # Assuming no nodeSelector below, this task will run on any node in the cluster that has a GPU, regardless of GPU type.
+              nvidia.com/gpu: 1
           imagePullPolicy: IfNotPresent
+        nodeSelector:
+          cloud.google.com/gke-accelerator: nvidia-tesla-k80
         restartPolicy: Never
+

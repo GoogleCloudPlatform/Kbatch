@@ -5,7 +5,7 @@ GPU support--this option can be chosen when setting up the cluster using the Kba
 You must also ensure that you run
 `kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/stable/nvidia-driver-installer/cos/daemonset-preloaded.yaml`
 so that GPU device drivers are installed whenever a new node that supports GPU is brought up.
-As with the other samples, the `sample/apply-config.sh` script will set up default resources, which are needed for this sample job.
+As with the other samples, the `defaultresources/create.sh` script will set up default resources, which are needed for this sample job.
 
 ### Running using ksub
 
@@ -17,6 +17,8 @@ in your cluster.
 ### Running using kubectl
 
 `kubectl create -f gpu-job.yaml`
+
+Ensure the GPU shown in the .yaml file matches a GPU type that is available in your autoscaler zone.
 
 ### Timing notes
 
