@@ -1,7 +1,7 @@
 ## Running the gpu job
 
 To run any GPU jobs, you must ensure that you have at least one node pool attached to the cluster that has enabled
-GPU support--this option can be chosen when setting up the cluster using the Kbatch scripts.
+GPU support--this option can be chosen when setting up the cluster using the Batch on GKE scripts.
 You must also ensure that you run
 `kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/stable/nvidia-driver-installer/cos/daemonset-preloaded.yaml`
 so that GPU device drivers are installed whenever a new node that supports GPU is brought up.

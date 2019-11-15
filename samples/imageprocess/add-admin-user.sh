@@ -14,7 +14,7 @@
 # limitations under the License.
 
 
-# This script calls add-user.sh and gives this user very permissive privileges in Kbatch
+# This script calls add-user.sh and gives this user very permissive privileges in Batch on GKE
 # Warning: only give these privileges if the user is a cluster admin.
 
 # This script assumes that the kubectl is already configured.

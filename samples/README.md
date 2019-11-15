@@ -1,9 +1,9 @@
-# Samples for Kbatch
+# Samples for Batch on GKE
 
 ## Base Resources
 
 This defaultresources folder contains a set of base resources that can be used as a starting point for
-running BatchJobs with KBatch. The following defaults are provided:
+running BatchJobs with Batch on GKE. The following defaults are provided:
 
 * BatchCostModel: Populated with current public GCE prices in us-central1
 * BatchBudget: Populated to use at most 100 currency units per day
