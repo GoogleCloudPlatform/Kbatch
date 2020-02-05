@@ -84,7 +84,7 @@
    </pre>
    delete gcp service account:
    <pre>
-   gcloud iam service-accounts delete kbatch-gcs-example-sa@chloeh-bc-test.iam.gserviceaccount.com
+   gcloud iam service-accounts delete kbatch-gcs-example-sa@[PROJECT_ID].iam.gserviceaccount.com
    </pre>
    delete the gcs bucket:
    <pre>
