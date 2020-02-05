@@ -83,13 +83,16 @@ verifySupported() {
 # checkDesiredVersion checks if the desired version is available.
 checkDesiredVersion() {
   if [ "x$DESIRED_VERSION" == "x" ]; then
+    # FIXME(bacongobbler): hard code the desired version for the time being.
+    # A better fix would be to filter for Helm 2 release pages.
+    TAG="v2.16.1"
     # Get tag from release URL
-    local latest_release_url="https://github.com/helm/helm/releases/latest"
-    if type "curl" > /dev/null; then
-      TAG=$(curl -Ls -o /dev/null -w %{url_effective} $latest_release_url | grep -oE "[^/]+$" )
-    elif type "wget" > /dev/null; then
-      TAG=$(wget $latest_release_url --server-response -O /dev/null 2>&1 | awk '/^  Location: /{DEST=$2} END{ print DEST}' | grep -oE "[^/]+$")
-    fi
+    # local latest_release_url="https://github.com/helm/helm/releases/latest"
+    # if type "curl" > /dev/null; then
+    #   TAG=$(curl -Ls -o /dev/null -w %{url_effective} $latest_release_url | grep -oE "[^/]+$" )
+    # elif type "wget" > /dev/null; then
+    #   TAG=$(wget $latest_release_url --server-response -O /dev/null 2>&1 | awk '/^  Location: /{DEST=$2} END{ print DEST}' | grep -oE "[^/]+$")
+    # fi
   else
     TAG=$DESIRED_VERSION
   fi
@@ -99,7 +102,7 @@ checkDesiredVersion() {
 # if it needs to be changed.
 checkHelmInstalledVersion() {
   if [[ -f "${HELM_INSTALL_DIR}/${PROJECT_NAME}" ]]; then
-    local version=$(helm version -c | grep '^Client' | cut -d'"' -f2)
+    local version=$("${HELM_INSTALL_DIR}/${PROJECT_NAME}" version -c | grep '^Client' | cut -d'"' -f2)
     if [[ "$version" == "$TAG" ]]; then
       echo "Helm ${version} is already ${DESIRED_VERSION:-latest}"
       return 0
@@ -116,7 +119,7 @@ checkHelmInstalledVersion() {
 # for that binary.
 downloadFile() {
   HELM_DIST="helm-$TAG-$OS-$ARCH.tar.gz"
-  DOWNLOAD_URL="https://kubernetes-helm.storage.googleapis.com/$HELM_DIST"
+  DOWNLOAD_URL="https://get.helm.sh/$HELM_DIST"
   CHECKSUM_URL="$DOWNLOAD_URL.sha256"
   HELM_TMP_ROOT="$(mktemp -dt helm-installer-XXXXXX)"
   HELM_TMP_FILE="$HELM_TMP_ROOT/$HELM_DIST"
@@ -151,11 +154,9 @@ installFile() {
   TILLER_TMP_BIN="$HELM_TMP/$OS-$ARCH/$TILLER_NAME"
   echo "Preparing to install $PROJECT_NAME and $TILLER_NAME into ${HELM_INSTALL_DIR}"
   runAsRoot cp "$HELM_TMP_BIN" "$HELM_INSTALL_DIR"
-  runAsRoot chown "$USER" "$HELM_INSTALL_DIR/$PROJECT_NAME"
   echo "$PROJECT_NAME installed into $HELM_INSTALL_DIR/$PROJECT_NAME"
   if [ -x "$TILLER_TMP_BIN" ]; then
     runAsRoot cp "$TILLER_TMP_BIN" "$HELM_INSTALL_DIR"
-    runAsRoot chown "$USER" "$HELM_INSTALL_DIR/$TILLER_NAME"
     echo "$TILLER_NAME installed into $HELM_INSTALL_DIR/$TILLER_NAME"
   else
     echo "info: $TILLER_NAME binary was not found in this release; skipping $TILLER_NAME installation"
@@ -194,7 +195,7 @@ testVersion() {
 help () {
   echo "Accepted cli arguments are:"
   echo -e "\t[--help|-h ] ->> prints this help"
-  echo -e "\t[--version|-v <desired_version>] . When not defined it defaults to latest"
+  echo -e "\t[--version|-v <desired_version>]"
   echo -e "\te.g. --version v2.4.0  or -v latest"
   echo -e "\t[--no-sudo]  ->> install without sudo"
 }

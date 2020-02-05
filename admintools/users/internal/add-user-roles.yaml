@@ -19,7 +19,7 @@ metadata:
   namespace: $namespace
 rules:
 - apiGroups:
-    - \"\"
+    - ""
   resources:
     - pods
   verbs:
@@ -33,6 +33,7 @@ rules:
   - watch
   - create
   - update
+  - patch
 - apiGroups: ["kbatch.k8s.io"]
   resources:
   - batchtasks
