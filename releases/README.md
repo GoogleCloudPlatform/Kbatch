@@ -12,7 +12,7 @@ For installation and how-to guide, refer to this [User Guide](https://cloud.goog
 
 ### [V0.7.0]
 
-Initial kbatch beta release supporting single task jobs.
+Initial kbatch beta release supporting single task jobs. Ksub binary for Linux.
 
 ### [V0.7.1]
 
