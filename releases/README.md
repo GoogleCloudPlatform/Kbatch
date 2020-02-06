@@ -6,7 +6,7 @@ This folder contains artifacts of kbatch releases.
 
 The overall documentation for kbatch is at
 [Batch on GKE](https://cloud.google.com/batch/).
-For installation and how-to guide, refer to this [User Guide](https://cloud.google.com/kubernetes-engine/docs/concepts/batch)
+For installation and how-to guide, refer to this [User Guide](https://cloud.google.com/kubernetes-engine/docs/concepts/batch).
 
 ## Releases
 
@@ -20,4 +20,4 @@ Minor bug fixes.
 
 ### [V0.8.0]
 
-Support array jobs.
+Support array jobs. Ksub binaries for both Linux and MacOs. 
