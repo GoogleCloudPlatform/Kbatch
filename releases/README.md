@@ -20,4 +20,8 @@ Minor bug fixes.
 
 ### [V0.8.0]
 
-Support array jobs. Ksub binaries for both Linux and MacOs. 
+Support array jobs. Ksub binaries for both Linux and MacOs.
+
+### [V0.8.1]
+
+Some bug fixes.
