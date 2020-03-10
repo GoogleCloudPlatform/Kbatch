@@ -19,6 +19,11 @@ metadata:
   namespace: default
 spec:
   batchQueueName: default
+  batchNodeSelector:
+    gpuType:
+      operator: Equals
+      values:
+      - "nvidia-tesla-k80"
   taskGroups:
   - name: main
     maxWallTime: 5m
@@ -37,7 +42,5 @@ spec:
               memory: 2Gi
               nvidia.com/gpu: 1
           imagePullPolicy: IfNotPresent
-        nodeSelector:
-          cloud.google.com/gke-accelerator: nvidia-tesla-k80
         restartPolicy: Never
 
