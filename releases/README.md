@@ -25,3 +25,8 @@ Support array jobs. Ksub binaries for both Linux and MacOs.
 ### [V0.8.1]
 
 Some bug fixes.
+
+### [V0.9.0]
+
+Support the use of Preemptible VMs.
+
