@@ -2,6 +2,13 @@
 
 The `defaultresources/create.sh` script will set up default resources, which are needed for this sample job.
 
+### Preemptible option
+
+There is both a regular version and a preemptible version of this example. The preemptible
+version will be run on preemptible virtual machines. To use the preemptible version, replace
+run_pi_with_ksub.sh with run_pi_preemptible_with_ksub.sh below (or, if using kubectl, replace
+pi-job.yaml with pi-job-preemptible.yaml)
+
 ### Running using ksub
 `./ksub run_pi_with_ksub.sh`
 
