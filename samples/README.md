@@ -28,3 +28,6 @@ checkerboard pattern on the image, and the second makes the image greyscale.
 ### GPUJob
 
 A job that tests GPU vector addition.
+
+### Array job
+An example of how to run array jobs. 
