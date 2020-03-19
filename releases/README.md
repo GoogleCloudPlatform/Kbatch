@@ -30,3 +30,7 @@ Some bug fixes.
 
 Support the use of Preemptible VMs.
 
+### [V0.9.1]
+
+Change labels to use kbatch.io instead of k8s.io
+
