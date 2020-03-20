@@ -124,7 +124,7 @@ echo "mountPath is ${mountPath}"
 echo "pvc name is ${pvc}"
 
 # some relevant kbatch labels
-kbatchLabelPrefix="kbatch.k8s.io/"
+kbatchLabelPrefix="kbatch.io/"
 jobLabelName="${kbatchLabelPrefix}jobname"
 export jobCategoryLabelName="${kbatchLabelPrefix}jobcategory"
 
