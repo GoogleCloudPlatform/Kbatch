@@ -16,9 +16,10 @@
 
 usage() {
     echo "usage: adduser.sh [options]"
-    echo "       -s | --short-name         [Required] short name used to create valid k8s resource name."
-    echo "       -u | --user-name          [Required] k8s cluster user name of the user."
-    echo "       -n | --namespace          [Required] namespace to add this user in."
+    echo "       -s  | --short-name        [Required] short name used to create valid k8s resource name."
+    echo "       -u  | --user-name         [One of -u or -sa is required] k8s cluster user name."
+    echo "       -sa | --service-account   [One of -u or -sa is required] k8s cluster service account name."
+    echo "       -n  | --namespace         [Required] namespace to add this user in."
     echo "       --project                 [Required] project id"
     echo "       --security-policy          set up security policy for the user."
     echo "                                  pass a comma separated string as: uid,group_id"
@@ -41,6 +42,8 @@ usage() {
 
 export short_name=
 export user_name=
+export buc_name=
+export buc_user_id=
 export namespace=
 need_security_policy=
 security_policy=
@@ -93,6 +96,9 @@ while [[ $1 ]]; do
         -u | --user-name )      shift
                                 user_name="$1"
                                 ;;
+        -sa | --service-account )  shift
+                                service_account="$1"
+                                ;;
         -n | --namespace )      shift
                                 namespace="$1"
                                 ;;
@@ -121,7 +127,17 @@ while [[ $1 ]]; do
 done
 
 # Required values
-if [[ -z "$short_name" || -z "$user_name" || -z "$namespace" || -z "$project_id" ]]; then
+if [[ -z "$user_name" && -z "$service_account" ]]; then
+  usage
+  exit
+fi
+
+if [[ -n "$user_name" && -n "$service_account" ]]; then
+  usage
+  exit
+fi
+
+if [[ -z "$short_name" || -z "$namespace" || -z "$project_id" ]]; then
   usage
   exit
 fi
@@ -189,7 +205,20 @@ fi
 k8s_name="$short_name-$namespace"
 
 # Create BatchUserContext
-build-batch-user-context
+# When using service accounts, sometimes the account's uniqueID, rather than the
+# email address is shown under the "Submitted By" field. To handle this case,
+# we add both the uniqueID and the email address as separate BatchUserContexts.
+buc_name=${k8s_name}
+if [[ -n ${service_account} ]]; then
+  buc_user_id=${service_account}
+  build-batch-user-context
+  buc_name=${k8s_name}-id
+  buc_user_id=$(gcloud iam service-accounts describe ${service_account} --format="value(uniqueId)")
+  build-batch-user-context
+else
+  buc_user_id=${user_name}
+  build-batch-user-context
+fi
 
 # create roles for this user
 apply-resource internal/add-user-roles.yaml
@@ -209,29 +238,19 @@ fi
 
 
 # create role bindings for this user, default settings as a normal user.
-export subject_name="$user_name"
+if [[ -n "$user_name" ]]; then
+  export subject_name="$user_name"
+  member="user:$user_name"
+else
+  export subject_name="$service_account"
+  member="serviceAccount:$service_account"
+fi
 export subject_kind="User"
 export subject_api_group="rbac.authorization.k8s.io"
 export subject_namespace=""
 
-# check if the user is a service account based on the user name.
-# set up the role binding definition accordingly.
-if [[ "$user_name" = "system:serviceaccount:"* ]]; then
-  uarray=(${user_name//:/ })
-  uarraysize=${#uarray[@]}
-  if [[ ${uarraysize} -eq 4 ]]
-  then
-    subject_namespace=${uarray[2]}
-    subject_name=${uarray[3]}
-    subject_kind="ServiceAccount"
-    subject_api_group=""
-  else
-    echo "$user_name is not a service account"
-  fi
-fi
-
 apply-resource internal/user-role-bindings.yaml
 
 # Add IAM related bindings
-gcloud projects add-iam-policy-binding ${project_id} --member=user:${user_name} --role=projects/${project_id}/roles/BatchUser > /dev/null
-gcloud projects add-iam-policy-binding ${project_id} --member=user:${user_name} --role=roles/logging.viewer > /dev/null
+gcloud projects add-iam-policy-binding ${project_id} --member=${member} --role=projects/${project_id}/roles/BatchUser > /dev/null
+gcloud projects add-iam-policy-binding ${project_id} --member=${member} --role=roles/logging.viewer > /dev/null

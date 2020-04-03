@@ -20,7 +20,12 @@
 # This script assumes that the kubectl is already configured.
 
 read -p "Please enter the name of your project:" PROJECT_NAME
-read -p "Please type in your username in this GCP project (example: alice@example.com):" USER_NAME
+echo "Output from gcloud auth list may be helpful for the next prompt: "
+echo $(gcloud auth list)
+read -p "Please enter the username in this GCP project (example: alice@example.com). Leave blank if using a service account:" USER_NAME
+if [[ -z $USER_NAME ]]; then
+  read -p "Please enter the service account in this GCP project (example: bob-batch@project.iam.gserviceaccount.com):" SERVICE_ACCOUNT
+fi
 echo "A short name is also needed to create k8s resources names."
 echo "A short name consists of lower case alphanumeric characters, -, and ."
 echo "example: use alice as short name for username alice@example.com"
@@ -28,5 +33,9 @@ read -p "Please type in a short name: " SHORT_NAME
 
 # adjust the directory to where the admin-tools dir is
 pushd ../../admintools/users
-./add-user.sh -s "${SHORT_NAME}" -u "${USER_NAME}" -n default --project "${PROJECT_NAME}"
+if [[ -n $USER_NAME ]]; then
+  ./add-user.sh -s "${SHORT_NAME}" -u "${USER_NAME}" -n default --project "${PROJECT_NAME}"
+else
+  ./add-user.sh -s "${SHORT_NAME}" -sa "${SERVICE_ACCOUNT}" -n default --project "${PROJECT_NAME}"
+fi
 popd

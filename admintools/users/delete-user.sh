@@ -16,9 +16,10 @@
 
 usage() {
     echo "usage: deleteuser.sh [options]"
-    echo "       -s | --short-name           [Required] short name used for user roles."
-    echo "       -n | --namespace            [Required] namespace to remove this user from."
-    echo "       -c | --cluster              if this user's cluster role and cluster role binding should be deleted too"
+    echo "       -s  | --short-name           [Required] short name used for user roles."
+    echo "       -n  | --namespace            [Required] namespace to remove this user from."
+    echo "       -sa | --service-account      if the role is a service account" 
+    echo "       -c  | --cluster              if this user's cluster role and cluster role binding should be deleted too"
     echo "example: deleteuser.sh -s alice -n default"
     echo "Note: this tool will NOT do any retry for the commands, but the errors will be printed out for debugging."
     echo "Note: this script will NOT delete any BatchTasks or PVCs created by this user."
@@ -27,19 +28,22 @@ usage() {
 short_name=
 namespace=
 clean_cluster=0
+label_prefix=kbatch.io
 
 while [[ $1 ]]; do
     case $1 in
-        -s  | --short-name )    shift
-                                short_name="$1"
-                                ;;
-        -n | --namespace )      shift
-                                namespace="$1"
-                                ;;
-        -c | --cluster )        clean_cluster=1
-                                ;;
-        * )                     usage
-                                exit 1
+        -s  | --short-name )      shift
+                                  short_name="$1"
+                                  ;;
+        -n  | --namespace )       shift
+                                  namespace="$1"
+                                  ;;
+        -c  | --cluster )         clean_cluster=1
+                                  ;;
+        -sa | --service-account ) service_account=1
+                                  ;;                                
+        * )                       usage
+                                  exit 1
     esac
     shift
 done
@@ -56,16 +60,19 @@ labelusername=$(kubectl get batchusercontext ${short_name}-${namespace} -o=jsonp
 kubectl delete rolebinding ${short_name}-${namespace} -n ${namespace}
 kubectl delete role ${short_name}-${namespace} -n ${namespace}
 # delete all the dynamic roles with this label
-kubectl delete role -n ${namespace} -l kbatch.k8s.io/username=${labelusername}
-kubectl delete rolebindings -n ${namespace} -l kbatch.k8s.io/username=${labelusername}
+kubectl delete role -n ${namespace} -l ${label_prefix}/username=${labelusername}
+kubectl delete rolebindings -n ${namespace} -l ${label_prefix}/username=${labelusername}
 
 # delete cluster role and role binding
 if (( clean_cluster == 1 )); then
   kubectl delete clusterrolebinding ${short_name}-crb
   kubectl delete clusterrole ${short_name}-cr
-  kubectl delete clusterrolebinding -l kbatch.k8s.io/username=${labelusername}
-  kubectl delete clusterrole -l kbatch.k8s.io/username=${labelusername}
+  kubectl delete clusterrolebinding -l ${label_prefix}/username=${labelusername}
+  kubectl delete clusterrole -l ${label_prefix}/username=${labelusername}
 fi
 
 # delete batch user context in the name space.
 kubectl delete batchusercontext ${short_name}-${namespace} -n ${namespace}
+if (( service_account == 1 )); then
+  kubectl delete batchusercontext ${short_name}-${namespace}-id -n ${namespace}
+fi
