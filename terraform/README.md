@@ -9,8 +9,8 @@ The matrix below lists the versions of Kbatch and other dependencies that have b
 |  | **kbatch-terraform 0.1.x**| 
 |-----------------|----------------------|
 | **Kbatch 0.7.x**      |          ✗           |
-| **Kbatch 0.8.x**      |          ✗           |  
-| **Kbatch 0.9.x**      |          ✓          |  
+| **Kbatch 0.8.x**      |          ✗           |
+| **Kbatch 0.9.x**      |          ✓          |
 
 - ✓: Verified as compatible.
 - ✗: Verified as incompatible.
@@ -18,7 +18,7 @@ The matrix below lists the versions of Kbatch and other dependencies that have b
 
 ## Releases
 
-### [V0.1.0]
+### [V0.1.1]
 
 Initial kbatch-terraform release supporting kbatch v0.9.x
 
